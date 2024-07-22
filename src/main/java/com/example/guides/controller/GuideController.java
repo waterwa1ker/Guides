@@ -11,8 +11,8 @@ import com.example.guides.service.PersonService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +25,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/v1/guides")
 @Tag(name = "Контроллер для работы с гайдами")
+@AllArgsConstructor
 public class GuideController {
 
     private final GuideService guideService;
@@ -32,15 +33,6 @@ public class GuideController {
     private final JwtTokenProvider jwtTokenProvider;
     private final ChapterService chapterService;
     private final ModelMapper modelMapper;
-
-    @Autowired
-    public GuideController(GuideService guideService, PersonService personService, JwtTokenProvider jwtTokenProvider, ChapterService chapterService, ModelMapper modelMapper) {
-        this.guideService = guideService;
-        this.personService = personService;
-        this.jwtTokenProvider = jwtTokenProvider;
-        this.chapterService = chapterService;
-        this.modelMapper = modelMapper;
-    }
 
     @PostMapping("/create")
     @PreAuthorize("hasAnyAuthority('USER')")
