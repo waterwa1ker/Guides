@@ -5,13 +5,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Table(name = "chapter")
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Chapter {
+public class Chapter implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

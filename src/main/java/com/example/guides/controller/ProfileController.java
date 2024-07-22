@@ -1,11 +1,13 @@
 package com.example.guides.controller;
 
+import com.example.guides.constant.FilesFormat;
 import com.example.guides.dto.GuideDTO;
 import com.example.guides.dto.PersonDTO;
 import com.example.guides.model.Guide;
 import com.example.guides.model.Person;
 import com.example.guides.security.JwtTokenProvider;
 import com.example.guides.service.PersonService;
+import com.example.guides.util.MediaSaver;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -16,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,6 +33,7 @@ public class ProfileController {
     private final PersonService personService;
     private final ModelMapper modelMapper;
     private final JwtTokenProvider jwtTokenProvider;
+    private final MediaSaver mediaSaver;
 
     @PatchMapping
     @PreAuthorize("hasAnyAuthority('USER')")
@@ -72,6 +76,23 @@ public class ProfileController {
         }
         Person person = optionalPerson.get();
         return person.getGuides().stream().map(this::fromGuide).collect(Collectors.toList());
+    }
+
+    @PostMapping("/upload-photo")
+    @PreAuthorize("hasAnyAuthority('USER')")
+    @Operation(summary = "Загрузить фото профиля")
+    public ResponseEntity<?> uploadProfileImage(@Parameter(name = "Токен пользователя")
+                                                @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
+                                                @Parameter(name = "Файл")
+                                                @RequestParam(name = "file")
+                                                MultipartFile file) {
+        Optional<Person> optionalPerson = getPersonByToken(token);
+        if (optionalPerson.isEmpty()) {
+            return new ResponseEntity<>("User not found", HttpStatus.BAD_REQUEST);
+        }
+        Person person = optionalPerson.get();
+        return mediaSaver.saveProfilePhoto(file, person)
+                ? new ResponseEntity<>("Ok", HttpStatus.OK) : new ResponseEntity<>("Failed to save file", HttpStatus.BAD_REQUEST);
     }
 
     private Optional<Person> getPersonByToken(String token) {

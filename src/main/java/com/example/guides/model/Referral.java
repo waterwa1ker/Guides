@@ -5,13 +5,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Table(name = "referrals")
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Referral {
+public class Referral implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
