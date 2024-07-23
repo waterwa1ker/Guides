@@ -11,6 +11,9 @@ import lombok.NoArgsConstructor;
 @Schema(description = "Объект для главы гайда")
 public class ChapterDTO {
 
+    @Schema(description = "Идентификатор главы")
+    private long id;
+
     @Schema(description = "Имя главы")
     private String name;
 

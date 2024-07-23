@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 public class ChapterService {
 
@@ -14,6 +16,10 @@ public class ChapterService {
     @Autowired
     public ChapterService(ChapterRepository chapterRepository) {
         this.chapterRepository = chapterRepository;
+    }
+
+    public Optional<Chapter> findById(long id) {
+        return chapterRepository.findById(id);
     }
 
     @Transactional

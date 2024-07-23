@@ -43,4 +43,7 @@ public class Guide implements Serializable {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @OneToMany(mappedBy = "guide")
+    private List<PurchasedGuides> purchasedGuides;
+
 }

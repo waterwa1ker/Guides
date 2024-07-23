@@ -45,4 +45,7 @@ public class Person implements Serializable {
     @OneToMany(mappedBy = "author")
     private List<Guide> guides;
 
+    @OneToMany(mappedBy = "person")
+    private List<PurchasedGuides> purchasedGuides;
+
 }

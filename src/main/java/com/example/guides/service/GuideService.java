@@ -21,7 +21,7 @@ public class GuideService {
     }
 
     public List<Guide> findTopGuidesByEarnings() {
-        return guideRepository.findTop15ByOrderByEarningsDesc();
+        return guideRepository.findTop10ByOrderByEarningsDesc();
     }
 
     public Optional<Guide> findById(long id) {

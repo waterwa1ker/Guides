@@ -9,5 +9,5 @@ import java.util.List;
 @Repository
 public interface GuideRepository extends JpaRepository<Guide, Long> {
 
-    List<Guide> findTop15ByOrderByEarningsDesc();
+    List<Guide> findTop10ByOrderByEarningsDesc();
 }
