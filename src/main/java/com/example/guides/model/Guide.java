@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Table(name = "guide")
@@ -32,5 +33,14 @@ public class Guide implements Serializable {
 
     @OneToMany(mappedBy = "guide")
     private List<Chapter> chapters;
+
+    private int price;
+
+    private int count;
+
+    private int earnings;
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
 }

@@ -26,6 +26,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/v1/auth")
 @Tag(name = "Контроллер для авторизации")
+@CrossOrigin("http://localhost:8081")
 public class AuthController {
 
     @Value("${auth.password}")

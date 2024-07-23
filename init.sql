@@ -20,7 +20,11 @@ create table if not exists guide (
     main_img varchar,
     description varchar,
     person_id bigint references person(id),
-    name varchar
+    name varchar,
+    price int,
+    created_at timestamp default now(),
+    count int,
+    earnings int
 );
 
 create table if not exists chapter (

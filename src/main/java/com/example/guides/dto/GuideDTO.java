@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -12,6 +13,9 @@ import java.util.List;
 @AllArgsConstructor
 @Schema(name = "Объект гайда")
 public class GuideDTO {
+
+    @Schema(name = "Идентификатор гайда")
+    private long id;
 
     @Schema(name = "Ссылка на изображение гайда")
     private String mainImg;
@@ -21,5 +25,17 @@ public class GuideDTO {
 
     @Schema(name = "Главы гайда")
     private List<ChapterDTO> chapters;
+
+    @Schema(name = "Цена гайда")
+    private int price;
+
+    @Schema(name = "Количество покупок гайда")
+    private int count;
+
+    @Schema(name = "Количество заработанной валюты за этот гайд")
+    private int earnings;
+
+    @Schema(name = "Время создания гайда")
+    private LocalDateTime createdAt;
 
 }

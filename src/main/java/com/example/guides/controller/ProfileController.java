@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/v1/user-profile")
 @Tag(name = "Контроллер для работы с профилем пользователя")
 @AllArgsConstructor
+@CrossOrigin("http://localhost:8081")
 public class ProfileController {
 
     private final PersonService personService;
