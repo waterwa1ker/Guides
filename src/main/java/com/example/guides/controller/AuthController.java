@@ -1,5 +1,6 @@
 package com.example.guides.controller;
 
+import com.example.guides.dto.AuthDTO;
 import com.example.guides.dto.PersonDTO;
 import com.example.guides.model.Person;
 import com.example.guides.model.Referral;
@@ -54,33 +55,33 @@ public class AuthController {
     public ResponseEntity<?> initPerson(@Parameter(name = "Реферальная ссылка пользователя")
                                         @RequestParam(required = false) String ref,
                                         @Parameter(name = "Данные о пользователе, который совершает вход в приложение")
-                                        @RequestBody PersonDTO personDTO) {
-        Optional<Person> optionalPerson = personService.findById(personDTO.getId());
+                                        @RequestBody AuthDTO authDTO) {
+        Optional<Person> optionalPerson = personService.findById(authDTO.getId());
         if (optionalPerson.isEmpty() && ref != null) {
             Optional<Person> byReferralLink = personService.findByReferralLink(ref);
             if (byReferralLink.isEmpty()) {
                 return new ResponseEntity<>("Referral link is invalid", HttpStatus.BAD_REQUEST);
             } else {
-                return register(personDTO, byReferralLink.get());
+                return register(authDTO, byReferralLink.get());
             }
         } else {
             if (optionalPerson.isPresent()) {
-                return login(personDTO);
+                return login(authDTO);
             }
-            return register(personDTO, null);
+            return register(authDTO, null);
         }
     }
 
-    private ResponseEntity<?> login(PersonDTO personDTO) {
-        String username = personDTO.getUsername();
+    private ResponseEntity<?> login(AuthDTO authDTO) {
+        String username = authDTO.getUsername();
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-        Person person = toPerson(personDTO);
+        Person person = toPerson(authDTO);
         String token = jwtTokenProvider.createToken(username, person.getRole());
         return ResponseEntity.ok(createToken(token, username));
     }
 
-    private ResponseEntity<?> register(PersonDTO newPerson, Person referralOwner) {
-        Person person = toPerson(newPerson);
+    private ResponseEntity<?> register(AuthDTO authDTO, Person referralOwner) {
+        Person person = toPerson(authDTO);
         registrationService.register(person);
         if (referralOwner != null) {
             referralService.save(new Referral(referralOwner, person));
@@ -96,8 +97,8 @@ public class AuthController {
         return response;
     }
 
-    private Person toPerson(PersonDTO personDTO) {
-        return modelMapper.map(personDTO, Person.class);
+    private Person toPerson(AuthDTO authDTO) {
+        return modelMapper.map(authDTO, Person.class);
     }
 
 
