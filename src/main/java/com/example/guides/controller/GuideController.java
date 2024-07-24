@@ -45,10 +45,12 @@ public class GuideController {
 
     @GetMapping
     @PreAuthorize("hasAnyAuthority('USER')")
-    @Operation(summary = "Посмотреть топ 15 гайдов по заработку")
-    public List<GuideDTO> findTopGuides() {
+    @Operation(summary = "Посмотреть топ 10 гайдов по заработку")
+    public List<GuideDTO> findTopGuides(@Parameter(name = "Язык гайда")
+                                        @RequestParam String lang) {
         return guideService.findTopGuidesByEarnings()
-                .stream().map(this::fromGuide)
+                .stream().filter(guide -> guide.getLanguage().getLang().equals(lang))
+                .map(this::fromGuide)
                 .collect(Collectors.toList());
     }
 
@@ -80,10 +82,26 @@ public class GuideController {
         }
         Guide guide = optionalGuide.get();
         Person person = optionalPerson.get();
+        if (isPersonOwnsGuide(person, guide)) {
+            return new ResponseEntity<>("This guide belongs to you", HttpStatus.BAD_REQUEST);
+        } else if (isGuideAlreadyPurchased(person, guide)) {
+            return new ResponseEntity<>("This guide already purchased", HttpStatus.BAD_REQUEST);
+        }
         setNewEarnings(guide);
         saveNewPurchasedGuide(person, guide);
         guideService.save(guide);
         return new ResponseEntity<>("OK", HttpStatus.OK);
+    }
+
+    private boolean isGuideAlreadyPurchased(Person person, Guide guide) {
+        long count = person.getPurchasedGuides().stream().map(PurchasedGuides::getGuide)
+                .filter(e -> e.equals(guide))
+                .count();
+        return count == 1;
+    }
+
+    private boolean isPersonOwnsGuide(Person person, Guide guide) {
+        return guide.getAuthor() == person;
     }
 
     @PostMapping("/create")
@@ -131,9 +149,9 @@ public class GuideController {
         float totalCount = russianCount + englishCount;
         boolean twentyPercentsOfFullText = totalCount / 5 <= russianCount;
         if (twentyPercentsOfFullText) {
-            return Language.RUSSIAN;
+            return Language.RU;
         }
-        return Language.ENGLISH;
+        return Language.ENG;
     }
 
     private void setNewEarnings(Guide guide) {

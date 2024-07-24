@@ -5,12 +5,12 @@ import lombok.Getter;
 @Getter
 public enum Language {
 
-    RUSSIAN("ru"),
-    ENGLISH("eng");
+    RU("ru"),
+    ENG("eng");
 
-    private String language;
+    private final String lang;
 
-    Language(String language) {
-        this.language = language;
+    Language(String lang) {
+        this.lang = lang;
     }
 }
