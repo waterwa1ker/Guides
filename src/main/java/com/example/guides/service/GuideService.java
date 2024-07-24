@@ -1,5 +1,6 @@
 package com.example.guides.service;
 
+import com.example.guides.constant.Language;
 import com.example.guides.model.Guide;
 import com.example.guides.repository.GuideRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +21,8 @@ public class GuideService {
         this.guideRepository = guideRepository;
     }
 
-    public List<Guide> findTopGuidesByEarnings() {
-        return guideRepository.findTop10ByOrderByEarningsDesc();
+    public List<Guide> findTopGuidesByEarnings(Language language) {
+        return guideRepository.findTop10ByLanguageOrderByEarningsDesc(language);
     }
 
     public Optional<Guide> findById(long id) {

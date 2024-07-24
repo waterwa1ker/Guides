@@ -48,9 +48,8 @@ public class GuideController {
     @Operation(summary = "Посмотреть топ 10 гайдов по заработку")
     public List<GuideDTO> findTopGuides(@Parameter(name = "Язык гайда")
                                         @RequestParam String lang) {
-        return guideService.findTopGuidesByEarnings()
-                .stream().filter(guide -> guide.getLanguage().getLang().equals(lang))
-                .map(this::fromGuide)
+        return guideService.findTopGuidesByEarnings(Language.valueOf(lang.toUpperCase()))
+                .stream().map(this::fromGuide)
                 .collect(Collectors.toList());
     }
 
@@ -91,17 +90,6 @@ public class GuideController {
         saveNewPurchasedGuide(person, guide);
         guideService.save(guide);
         return new ResponseEntity<>("OK", HttpStatus.OK);
-    }
-
-    private boolean isGuideAlreadyPurchased(Person person, Guide guide) {
-        long count = person.getPurchasedGuides().stream().map(PurchasedGuides::getGuide)
-                .filter(e -> e.equals(guide))
-                .count();
-        return count == 1;
-    }
-
-    private boolean isPersonOwnsGuide(Person person, Guide guide) {
-        return guide.getAuthor() == person;
     }
 
     @PostMapping("/create")
@@ -165,6 +153,17 @@ public class GuideController {
             chapter.setGuide(guide);
             chapterService.save(chapter);
         }
+    }
+
+    private boolean isGuideAlreadyPurchased(Person person, Guide guide) {
+        long count = person.getPurchasedGuides().stream().map(PurchasedGuides::getGuide)
+                .filter(e -> e.equals(guide))
+                .count();
+        return count == 1;
+    }
+
+    private boolean isPersonOwnsGuide(Person person, Guide guide) {
+        return guide.getAuthor() == person;
     }
 
     private Optional<Person> getPersonByToken(String token) {
