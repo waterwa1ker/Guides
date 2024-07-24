@@ -78,7 +78,7 @@ public class ProfileController {
     @Operation(summary = "Получить все гайды пользователя либо купленные")
     public List<GuideDTO> getGuides(@Parameter(name = "Токен пользователя")
                                     @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
-                                    @RequestParam boolean own) {
+                                     @RequestParam boolean own) {
         Optional<Person> optionalPerson = getPersonByToken(token);
         if (optionalPerson.isEmpty()) {
             return null;

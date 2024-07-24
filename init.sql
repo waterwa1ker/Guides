@@ -24,7 +24,8 @@ create table if not exists guide (
     price int,
     created_at timestamp default now(),
     count int,
-    earnings int
+    earnings int,
+    language varchar
 );
 
 create table if not exists chapter (

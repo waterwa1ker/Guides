@@ -1,5 +1,6 @@
 package com.example.guides.model;
 
+import com.example.guides.constant.Language;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -45,5 +46,8 @@ public class Guide implements Serializable {
 
     @OneToMany(mappedBy = "guide")
     private List<PurchasedGuides> purchasedGuides;
+
+    @Enumerated(EnumType.STRING)
+    private Language language;
 
 }

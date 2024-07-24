@@ -1,5 +1,6 @@
 package com.example.guides.dto;
 
+import com.example.guides.constant.Language;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -37,5 +38,7 @@ public class GuideDTO {
 
     @Schema(name = "Время создания гайда")
     private LocalDateTime createdAt;
+
+    private Language language;
 
 }

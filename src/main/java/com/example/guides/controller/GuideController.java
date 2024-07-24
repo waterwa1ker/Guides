@@ -1,5 +1,6 @@
 package com.example.guides.controller;
 
+import com.example.guides.constant.Language;
 import com.example.guides.dto.GuideDTO;
 import com.example.guides.model.Chapter;
 import com.example.guides.model.Guide;
@@ -19,11 +20,12 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @RestController
@@ -62,7 +64,6 @@ public class GuideController {
         return fromGuide(optionalGuide.get());
     }
 
-    //ВНИМАТЕЛЬНЕЕ
     @GetMapping("/{id}/purchase")
     @PreAuthorize("hasAnyAuthority('USER')")
     @Operation(summary = "Приобрести гайд")
@@ -85,11 +86,6 @@ public class GuideController {
         return new ResponseEntity<>("OK", HttpStatus.OK);
     }
 
-    private void saveNewPurchasedGuide(Person person, Guide guide) {
-        PurchasedGuides purchasedGuides = new PurchasedGuides(person, guide);
-        purchasedGuidesService.save(purchasedGuides);
-    }
-
     @PostMapping("/create")
     @PreAuthorize("hasAnyAuthority('USER')")
     @Operation(summary = "Создать гайд")
@@ -103,9 +99,41 @@ public class GuideController {
         }
         Person author = optionalPerson.get();
         Guide guide = toGuide(guideDTO, author);
+        defineLanguage(guide);
         guideService.save(guide);
         saveChapters(guide, guide.getChapters());
         return new ResponseEntity<>("Ok", HttpStatus.OK);
+    }
+
+    private void defineLanguage(Guide guide) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(guide.getDescription());
+        for (Chapter chapter : guide.getChapters()) {
+            builder.append(chapter.getText());
+        }
+        String fullText = builder.toString();
+        guide.setLanguage(countSymbols(fullText));
+    }
+
+    private Language countSymbols(String fullText) {
+        Pattern russianPattern = Pattern.compile("[а-яА-ЯёЁ]");
+        Matcher russianMatcher = russianPattern.matcher(fullText);
+        Pattern englishPattern = Pattern.compile("[a-zA-Z]");
+        Matcher englishMatcher = englishPattern.matcher(fullText);
+        int russianCount = 0;
+        while (russianMatcher.find()) {
+            russianCount++;
+        }
+        int englishCount = 0;
+        while (englishMatcher.find()) {
+            englishCount++;
+        }
+        float totalCount = russianCount + englishCount;
+        boolean twentyPercentsOfFullText = totalCount / 5 <= russianCount;
+        if (twentyPercentsOfFullText) {
+            return Language.RUSSIAN;
+        }
+        return Language.ENGLISH;
     }
 
     private void setNewEarnings(Guide guide) {
@@ -124,6 +152,11 @@ public class GuideController {
     private Optional<Person> getPersonByToken(String token) {
         String username = jwtTokenProvider.getUsername(token);
         return personService.findByUsername(username);
+    }
+
+    private void saveNewPurchasedGuide(Person person, Guide guide) {
+        PurchasedGuides purchasedGuides = new PurchasedGuides(person, guide);
+        purchasedGuidesService.save(purchasedGuides);
     }
 
     private Guide toGuide(GuideDTO guideDTO, Person author) {
