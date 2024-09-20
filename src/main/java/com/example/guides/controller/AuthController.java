@@ -1,7 +1,6 @@
 package com.example.guides.controller;
 
 import com.example.guides.dto.AuthDTO;
-import com.example.guides.dto.PersonDTO;
 import com.example.guides.model.Person;
 import com.example.guides.model.Referral;
 import com.example.guides.security.JwtTokenProvider;

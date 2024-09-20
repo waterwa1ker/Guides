@@ -111,6 +111,15 @@ public class GuideController {
         return new ResponseEntity<>("Ok", HttpStatus.OK);
     }
 
+    //TODO
+    @GetMapping("/search")
+    @PreAuthorize("hasAnyAuthority('USER')")
+    @Operation(summary = "Поиск гайда")
+    public List<GuideDTO> findGuides(@Parameter(name = "Название гайда")
+                                     @RequestParam String text) {
+        return null;
+    }
+
     private void defineLanguage(Guide guide) {
         StringBuilder builder = new StringBuilder();
         builder.append(guide.getDescription());

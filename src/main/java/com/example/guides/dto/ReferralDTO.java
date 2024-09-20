@@ -11,9 +11,6 @@ import lombok.NoArgsConstructor;
 @Schema(description = "Объект рефералки")
 public class ReferralDTO {
 
-    @Schema(description = "Обладатель реферальной ссылки")
-    private PersonDTO referralOwner;
-
     @Schema(description = "Приглашенное лицо")
     private PersonDTO referral;
 }

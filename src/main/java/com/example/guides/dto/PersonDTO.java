@@ -30,7 +30,7 @@ public class PersonDTO {
     private String username;
 
     @Schema(description = "Рефералки пользователя")
-    private List<Referral> referrals;
+    private List<ReferralDTO> referrals;
 
     @Schema(description = "Личная реферальная ссылка пользователя")
     private String referralLink;
